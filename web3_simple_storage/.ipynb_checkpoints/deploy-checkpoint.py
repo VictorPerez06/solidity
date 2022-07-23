@@ -55,7 +55,7 @@ w3 = Web3(
 chain_id = 4
 
 my_address = "0x3ADeE0969B20C51faC2126B4218D62cD6FA4d220"
-private_key = "xx"
+private_key = "0x139b5ad264c04da2f5254b0c8e501eeecedc8356f3922e4e23b91b46429c1985"
 
 # Create the contract in Python
 SimpleStorage = w3.eth.contract(abi=abi, bytecode=bytecode)
