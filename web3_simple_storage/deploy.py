@@ -1,10 +1,22 @@
 import json
+
 from web3 import Web3
-from solcx import compile_standard
+
+# In the video, we forget to `install_solc`
+# from solcx import compile_standard
+from solcx import compile_standard, install_solc
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 with open("./SimpleStorage.sol", "r") as file:
     simple_storage_file = file.read()
+
+# We add these two lines that we forgot from the video!
+# print("Installing...")
+install_solc("0.6.0")
 
 # Solidity source code
 compiled_sol = compile_standard(
@@ -35,16 +47,18 @@ abi = json.loads(
     compiled_sol["contracts"]["SimpleStorage.sol"]["SimpleStorage"]["metadata"]
 )["output"]["abi"]
 
+# w3 = Web3(Web3.HTTPProvider(os.getenv("RINKEBY_RPC_URL")))
+# chain_id = 4
+#
 # For connecting to ganache
-w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:7545"))
-chain_id = 5777
-my_address = "0x0B77B9940A3c991917830fe42426132fD0909A78"
-private_key = os.getenv("PRIVATE_KEY")
-
+w3 = Web3(Web3.HTTPProvider("HTTP://127.0.0.1:8545"))
+chain_id = 1337
+my_address = "0xeb632B969eD53C9D719580f5D87F45a0b534F233"
+private_key = "0xf172b49136412d76e1a6caf5c731b3f7641b6b7254bee7bd3d005d1b8e8fb875"
 
 # Create the contract in Python
 SimpleStorage = w3.eth.contract(abi=abi, bytecode=bytecode)
-# Get the latest transactioné
+# Get the latest transaction
 nonce = w3.eth.getTransactionCount(my_address)
 # Submit the transaction that deploys the contract
 transaction = SimpleStorage.constructor().buildTransaction(
@@ -55,3 +69,32 @@ transaction = SimpleStorage.constructor().buildTransaction(
         "nonce": nonce,
     }
 )
+# Sign the transaction
+signed_txn = w3.eth.account.sign_transaction(transaction, private_key=private_key)
+# print("Deploying Contract!")
+# Send it!
+tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+# Wait for the transaction to be mined, and get the transaction receipt
+# print("Waiting for transaction to finish...")
+tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+
+
+# Working with deployed Contracts
+simple_storage = w3.eth.contract(address=tx_receipt.contractAddress, abi=abi)
+print(f"Initial Stored Value {simple_storage.functions.retrieve().call()}")
+greeting_transaction = simple_storage.functions.store(15).buildTransaction(
+    {
+        "chainId": chain_id,
+        "gasPrice": w3.eth.gas_price,
+        "from": my_address,
+        "nonce": nonce + 1,
+    }
+)
+signed_greeting_txn = w3.eth.account.sign_transaction(
+    greeting_transaction, private_key=private_key
+)
+tx_greeting_hash = w3.eth.send_raw_transaction(signed_greeting_txn.rawTransaction)
+print("Updating stored Value...")
+tx_receipt = w3.eth.wait_for_transaction_receipt(tx_greeting_hash)
+
+print(simple_storage.functions.retrieve().call())
