@@ -1,0 +1,15 @@
+{
+  "name": "MARS",
+  "description": "It is Mars!",
+  "image": "https://ipfs.io/ipfs/QmPfqgcHWL97DhdqCeEMjpwf5XQhDmpoH6F32RJHTRs94G?filename=mars.png",
+  "attributes": [
+    {
+      "trait_type": "strength",
+      "value": 50
+    },
+    {
+      "trait_type": "health",
+      "value": 98
+    }
+  ]
+}
