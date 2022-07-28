@@ -5,11 +5,13 @@
   "attributes": [
     {
       "trait_type": "strength",
-      "value": 50
+      "max_value": 100,
+      "value": 91
     },
     {
       "trait_type": "health",
-      "value": 98
+      "max_value": 100,
+      "value": 100
     }
   ]
 }

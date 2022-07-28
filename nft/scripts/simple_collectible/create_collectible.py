@@ -2,7 +2,7 @@
 from brownie import SimpleCollectible, accounts, network, config
 from scripts.helpful_scripts import OPENSEA_FORMAT
 
-sample_token_uri = "https://ipfs.io/ipfs/Qma8NiFp6irNQJMhm7rYZrtPp2VqicejtL4LJGCEkXKkRs?filename=4-MARS.json"
+sample_token_uri = "https://ipfs.io/ipfs/QmZcP2p8gJU6Ebzf3ST4pWNzQREn8xvupU9AFDirUHhNUE?filename=3-MARS.json"
 
 
 def main():
